@@ -1,0 +1,7 @@
+#!/bin/bash
+
+./init
+
+export ALSADEV=plughw:4,0
+
+ruby mimi.rb mimi.yaml

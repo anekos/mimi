@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -euC
+# set -o pipefail
+
+# exec 5>> /tmp/xmosh/shell-script-debug.out
+# BASH_XTRACEFD="5"
+# PS4='$LINENO: '
+# set -x
+
+cp /mnt/config/* .
+[ -f mimi.jconf ] || touch mimi.jconf

@@ -1,0 +1,8 @@
+-w mimi.phone
+-h dictation-kit-v4.4/model/phone_m/jnas-tri-3k16-gid.binhmm
+-hlist dictation-kit-v4.4/model/phone_m/logicalTri-3k16-gid.bin
+-lmp 8.0 -2.0
+-lmp2 8.0 -2.0
+-input mic
+-lv 10000
+-nostrip

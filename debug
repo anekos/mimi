@@ -1,0 +1,6 @@
+#!/bin/sh
+
+./init
+
+export ALSADEV=plughw:4,0
+./julius/julius -C mimi-base.jconf -C mimi.jconf "$@"
