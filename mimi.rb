@@ -104,23 +104,18 @@ if __FILE__ == $0
 
   actions = Actions.new(YAML.load(File.read(config_file)))
 
-  p 1
   yomi = IO.popen('gramtools/yomi2voca/yomi2voca.pl', 'r+') do
     |io|
-  p 2
     io.print(actions.yomi.join("\n").encode('EUC-JP'))
     io.close_write
     io.read.force_encoding('EUC-JP')
   end.encode('UTF-8')
 
-  p 3
   File.write('mimi.phone', yomi)
-  p 4
 
   yomi = IO.popen('./julius/julius -C mimi-base.jconf -C mimi.jconf', 'r') do
     |io|
     listener = Listener.new(actions)
     listener.start(io)
   end
-
 end
