@@ -4,6 +4,11 @@ require 'open3'
 require 'yaml'
 
 
+class DummyAction
+  def run
+    puts('DUMMY')
+  end
+end
 class HttpAction < Struct.new(:url)
   def run
     open(url)
@@ -11,7 +16,7 @@ class HttpAction < Struct.new(:url)
 end
 
 
-class Reading < Struct.new(:score, :action, :interval)
+class Reading < Struct.new(:score, :reading, :action, :interval)
 end
 
 
@@ -30,18 +35,20 @@ class Actions
         case av = entry['action']
         when %r[\Ahttps?://]
           HttpAction.new(av)
+        when 'dummy', 'nop'
+          DummyAction.new
         else
           raise "Invalid action: #{av}"
         end
 
-      interval = entry['interval'] || 5.0
+      interval = entry['interval'] || 2.0
 
       entry['phrase'].each do
         |ph|
         reading = ph['reading']
         score = ph['score']
 
-        @table[id] = Reading.new(score, action, interval)
+        @table[id] = Reading.new(score, reading, action, interval)
 
         @yomi << "#{id} #{reading}"
 
@@ -80,18 +87,20 @@ class Listener
         reading = @config.get(id.to_i)
         raise "Reading id not matched: #{id}" unless reading
 
+        STDERR.puts("[#{score}] #{reading.reading}")
+
         unless !@last or reading.interval < (now - @last)
-          STDERR.puts('In interval')
+          STDERR.puts('  > In interval')
           next
         end
 
         if reading.score <= score
           reading.action.run
+          STDERR.puts('  > Run')
+          @last = now
         else
-          STDERR.puts("Low score: #{score} (#{id})")
+          STDERR.puts('  > Low score')
         end
-
-        @last = now
       end
     end
   end
